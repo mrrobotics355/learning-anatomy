@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nervous System</title>
+  <style>
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<canvas id="renderCanvas"></canvas>
+
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+<script>
+  // Create Babylon.js engine
+  const canvas = document.getElementById('renderCanvas');
+  const engine = new BABYLON.Engine(canvas, true);
+
+  const scene = new BABYLON.Scene(engine);
+  scene.position = new BABYLON.Vector3(0, -5, 5); // Adjust values to fit your needs
+
+
+  // TODO:  Change background to white
+  // scene.clearColor = new BABYLON.Color4.FromHexString("#FFFAFA");
+
+  // Load GLTF model
+  BABYLON.SceneLoader.ImportMesh("", "models/", "untitled2.glb", scene, function (meshes) {
+
+    meshes[0].isPickable = true;
+
+    const boundingBox = meshes[0].getBoundingInfo().boundingBox;
+
+    const margin = 20;
+    const distance = (boundingBox.maximum.z - boundingBox.minimum.z) / 2 + margin;
+
+    const camera = scene.activeCamera;
+    camera.position.z = distance;
+  });
+
+  var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+  light.intensity = 0.7;
+
+  const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 10, BABYLON.Vector3.Zero(), scene);
+  camera.setPosition(new BABYLON.Vector3(-1, 3, 1)); // Set camera position to (0, 0, 0)
+  camera.target = BABYLON.Vector3.Zero();
+  camera.attachControl(canvas, false); // Don't attach control
+
+  // Disable camera panning and rotation (handled in drag)
+  camera.panningIsEnabled = false;
+  camera.allowPicking = false;
+  camera.allowInputs = false; // Prevent accidental camera input
+
+  // Drag sensitivity
+  const dragSensitivity = 0.01;
+
+  // Function to handle mouse drag
+  let isDragging = false;
+  let lastX, lastY;
+  canvas.addEventListener('mousedown', function (event) {
+    isDragging = true;
+    lastX = event.clientX;
+    lastY = event.clientY;
+  });
+
+  canvas.addEventListener('mouseup', function () {
+    isDragging = false;
+  });
+
+  canvas.addEventListener('mousemove', function (event) {
+    if (isDragging) {
+      const deltaX = event.clientX - lastX;
+      const deltaY = event.clientY - lastY;
+
+      // Update camera rotation based on drag delta and sensitivity
+      camera.rotation.y += deltaX * dragSensitivity;
+      camera.rotation.x += deltaY * dragSensitivity;
+
+      // Clamp camera rotation within limits (optional)
+      // camera.rotation.x = Math.max(Math.min(camera.rotation.x, Math.PI / 2), -Math.PI / 2);
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+    }
+  });
+
+  // Adjust camera zoom speed
+  camera.wheelPrecision = 50; // Set the desired zoom sensitivity
+
+  // Run the render loop
+  engine.runRenderLoop(function () {
+    scene.render();
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', function () {
+    engine.resize();
+  });
+</script>
+</body>
+</html>
