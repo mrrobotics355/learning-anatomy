@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digestive system</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <title>Digestive System</title>
     <style>
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .scene-card {
+            width: 75%;
+        }
+
+        .info-card {
+            width: 25%;
+        }
+
         canvas {
             width: 100%;
             height: 100%;
@@ -13,12 +29,74 @@
     </style>
 </head>
 <body>
-<canvas id="renderCanvas"></canvas>
+<button style="display: none" id="info-modal" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
+    Launch demo modal
+</button>
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+            </a>
+            <h1 class="text-center">Digestive System</h1>
+
+        </div>
+    </div>
+</header>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Body Part</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="part"></p>
+                <p id="description"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-container my-4 mx-2">
+    <div class="card scene-card">
+        <canvas id="renderCanvas"></canvas>
+    </div>
+    <div class="card info-card">
+        <p class="py-3 text-center">Digestive System
+        </p>
+        <p class="px-4 text-justify" style="text-align: justify">
+            The digestive system is a complex network of organs and tissues responsible for processing food and extracting nutrients essential for sustaining life. It begins in the mouth, where food is ingested, chewed, and mixed with saliva, initiating the breakdown of carbohydrates. The food then travels down the esophagus to the stomach, where it undergoes further breakdown through the action of stomach acids and enzymes. From there, partially digested food moves into the small intestine, where the majority of nutrient absorption occurs, facilitated by specialized structures such as villi and microvilli. The large intestine follows, absorbing water and electrolytes from undigested food, while bacteria aid in fermentation and the synthesis of certain vitamins. Finally, waste products are expelled through the anus during defecation. Throughout this process, organs such as the liver, pancreas, and gallbladder play crucial roles in producing digestive enzymes, regulating metabolism, and aiding in nutrient absorption, collectively ensuring the body receives the energy and resources necessary for optimal function.
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <footer class="py-3 my-4">
+
+        <p class="text-center text-muted py-4">© 2022 Digestive, Inc</p>
+    </footer>
+</div>
 
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
 <script>
 
+
+    let clicked = document.getElementById('part');
+    let description = document.getElementById('description');
+    let modalButton = document.getElementById('info-modal')
 
     // Create Babylon.js engine
     const canvas = document.getElementById('renderCanvas');
@@ -31,7 +109,7 @@
     scene.clearColor = new BABYLON.Color4.FromHexString("#FFFAFA");
 
     // Load GLTF model
-    BABYLON.SceneLoader.ImportMesh("", "models/", "digestive-system.glb", scene, function (meshes) {
+    BABYLON.SceneLoader.ImportMesh("", "models/", "digestive_modified.glb", scene, function (meshes) {
 
         meshes[0].isPickable = true;
 
@@ -42,6 +120,23 @@
 
         const camera = scene.activeCamera;
         camera.position.z = distance;
+
+        scene.onPointerDown = function (evt, pickResult) {
+            if (pickResult.hit) {
+                // Get the clicked position in 3D space
+                const clickedPosition = pickResult.pickedPoint;
+                console.log("Clicked position:", clickedPosition);
+            }
+        };
+
+        handleDisplay(scene, 0.013, 17.404, -2.24, 'Small Intestine', 'Some Data for some part')
+        handleDisplay(scene, 0.225, 29.13, -0.8, 'Large Intestine', 'Some Data for some part')
+        handleDisplay(scene, 2.9655, 40.116, 0.01, 'Liver', 'Some Data for some part')
+        handleDisplay(scene, -5.607, 35.994, -9., 'Stomach', 'Some Data for some part')
+        handleDisplay(scene, -0.77, 30.536, -9, 'Pancreas', 'Some Data for some part')
+        handleDisplay(scene, 0.527, 52.31, -11.23, 'Esophagus', 'Some Data for some part')
+        handleDisplay(scene, -.324, 5.624, -12.366, 'Anus', 'Some Data for some part')
+        handleDisplay(scene, -.31, 75.067, 4.9, 'Mouth', 'Some Data for some part')
 
 
     });
@@ -93,6 +188,41 @@
     engine.runRenderLoop(function () {
         scene.render();
     });
+    const data = {
+        'Small Intestine': 'A long, coiled tube where most of the digestion and absorption of nutrients from food occurs in the digestive system.',
+        'Large Intestine': 'Also known as the colon, it\'s a wider tube that absorbs water and salts from undigested food, forming feces for excretion.',
+        'Liver': 'A large organ responsible for detoxification, metabolism of nutrients, production of bile for digestion, and storage of glycogen.',
+        'Stomach': 'A muscular sac in the digestive system where food is broken down by stomach acids and enzymes before being passed to the small intestine.',
+        'Pancreas': 'An organ that produces digestive enzymes and insulin to regulate blood sugar levels.',
+        'Esophagus': 'A muscular tube that connects the throat (pharynx) with the stomach, allowing food and liquids to pass from the mouth to the stomach.',
+        'Anus': 'The opening at the end of the digestive tract through which feces are expelled from the body during defecation.',
+        'Mouth': 'The beginning of the digestive system where food is ingested and chewed, while saliva begins the process of digestion through the action of enzymes.'
+    };
+
+
+    function handleDisplay(scene, x, y, z, label, descriptionData) {
+        const material = new BABYLON.StandardMaterial("material", scene);
+
+        const circle = BABYLON.MeshBuilder.CreateDisc("circle", {
+            radius: 2,
+            tessellation: 50,
+            sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        }, scene);
+        circle.position.x = x;
+        circle.position.y = y;
+        circle.position.z = z;
+        circle.material = material; // Apply the material to the circle mesh
+
+        // Add event listener for pointer down (click) events
+        circle.actionManager = new BABYLON.ActionManager(scene);
+        circle.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function (evt) {
+            // Perform actions when the circle is clicked
+            clicked.innerText = label
+            description.innerText = data[label]
+            modalButton.click()
+        }));
+
+    }
 
     // Handle window resize
     window.addEventListener('resize', function () {
