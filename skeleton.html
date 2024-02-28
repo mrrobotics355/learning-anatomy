@@ -3,8 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
   <title>Skeleton</title>
   <style>
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .scene-card {
+      width: 75%;
+    }
+
+    .info-card {
+      width: 25%;
+    }
+
     canvas {
       width: 100%;
       height: 100%;
@@ -13,11 +29,78 @@
   </style>
 </head>
 <body>
-<canvas id="renderCanvas"></canvas>
+<button style="display: none" id="info-modal" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+<header class="p-3 mb-3 border-bottom">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+          <use xlink:href="#bootstrap"></use>
+        </svg>
+      </a>
+      <h1 class="text-center">Skeleton</h1>
+
+    </div>
+  </div>
+</header>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Body Part</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="part"></p>
+        <p id="description"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-container my-4 mx-2">
+  <div class="card scene-card">
+    <canvas id="renderCanvas"></canvas>
+  </div>
+  <div class="card info-card">
+    <p class="py-3 text-center">Skeleton
+    </p>
+    <p class="px-4 text-justify" style="text-align: justify">
+      A skeleton provides a structural framework for a document or project, outlining its essential components and
+      their relationships. Typically, a skeleton consists of key elements such as headings, subheadings, and
+      placeholders for content. It serves as a roadmap, guiding the development process by defining the overall
+      organization and flow. In a document skeleton, headings represent main topics or sections, while subheadings
+      break down these topics into smaller, more detailed sections. Placeholder content can include brief
+      descriptions or notes, indicating the type of information that will populate each section. A well-defined
+      skeleton ensures coherence and clarity in the final product, allowing for easier navigation and
+      understanding by both creators and audiences.
+    </p>
+  </div>
+</div>
+
+<div class="container">
+  <footer class="py-3 my-4">
+
+    <p class="text-center text-muted py-4">© 2022 Skeleton, Inc</p>
+  </footer>
+</div>
 
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+
 <script>
+
+  let clicked = document.getElementById('part');
+  let description = document.getElementById('description');
+  let modalButton = document.getElementById('info-modal')
+
   // Create Babylon.js engine
   const canvas = document.getElementById('renderCanvas');
   const engine = new BABYLON.Engine(canvas, true);
@@ -29,20 +112,65 @@
   scene.clearColor = new BABYLON.Color4.FromHexString("#FFFAFA");
 
   // Load GLTF model
-  BABYLON.SceneLoader.ImportMesh("", "models/", "extensor_digitorum.glb", scene, function (meshes) {
-
+  BABYLON.SceneLoader.ImportMesh("", "models/", "modified.glb", scene, function (meshes) {
     meshes[0].isPickable = true;
 
     const boundingBox = meshes[0].getBoundingInfo().boundingBox;
-
     const margin = 20; // Adjust the margin as needed
     const distance = (boundingBox.maximum.z - boundingBox.minimum.z) / 2 + margin;
 
     const camera = scene.activeCamera;
     camera.position.z = distance;
 
+    // Create a material with a texture
+    // material.diffuseTexture = new BABYLON.Texture("https://www.w3schools.com/cssref/trolltunga.jpg", scene); // Replace URL with your image URL
 
+    // Create a circle mesh
+
+
+    handleDisplay(scene, -10.966, 68.700, 13.75, 'Femur', 'Some Data for some part')
+    handleDisplay(scene, -7.88, 122.079, 22.85, 'Ribs', 'Some Part 2')
+    handleDisplay(scene, 1, 112.079, 2.25, 'Vertebrae', 'Some Part 2')
+    // handleDisplay(scene, -5.132, 161.45,6.686,  'Spine', 'Some Part 2')
+    handleDisplay(scene, 0.33, 125.145, 22.920, 'Sternum', 'Some Part 2')
+    handleDisplay(scene, 0.901, 159.395, 21.15, 'Cranium', 'Some Part 2')
+    handleDisplay(scene, -19.56, 121.64, 12.53, 'Humerus', 'Some Part 2')
+    handleDisplay(scene, -7.88, 20.533, 11.323, 'Tibia', 'Some Part 2')
+    handleDisplay(scene, 8.51, 38.603, 12.971, 'Patella', 'Some Part 2')
+    handleDisplay(scene, 10.188, 90.495, 15.91, 'Pelvis', 'Some Part 2')
+    handleDisplay(scene, -26.73, 91.03, 13.992, 'Radius', 'Some Part 2')
+    handleDisplay(scene, 22.596, 87.005, 12.86, 'Ulna', 'Some Part 2')
+    handleDisplay(scene, 10.51, 16.55, 4.88, 'Fibula', 'Some Part 2')
+
+    // Create another circle mesh
+    // const circle2 = BABYLON.MeshBuilder.CreateDisc("circle2", { radius: 5, tessellation: 50, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, scene);
+    // circle2.position.x = -7.88;
+    // circle2.position.y = 122.079;
+    // circle2.position.z = 22.85;
+    // circle2.material = material; // Apply the material to the circle mesh
+    //
+    // // Add event listener for pointer down (click) events
+    // circle2.actionManager = new BABYLON.ActionManager(scene);
+    // circle2.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function (evt) {
+    //   // Perform actions when circle 2 is clicked
+    //
+    //   clicked.innerText = 'Ribs'
+    //   description.innerText = 'Ribs are the bones in your chest that protect organs like your heart and lungs. You have 12 pairs, connecting to your spine in the back and your breastbone in the front. They expand and contract when you breathe, helping you to breathe properly and keeping your vital organs safe.'
+    //   modalButton.click()
+    //
+    //
+    // }));
+
+    // Event listener for pointer down (click)
+    scene.onPointerDown = function (evt, pickResult) {
+      if (pickResult.hit) {
+        // Get the clicked position in 3D space
+        const clickedPosition = pickResult.pickedPoint;
+        console.log("Clicked position:", clickedPosition);
+      }
+    };
   });
+
 
   // Add light to provide ambient lighting
   var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
@@ -87,6 +215,70 @@
     }
   });
 
+  canvas.addEventListener('click', function (event) {
+    // Get the click position on the screen
+    const pickResult = scene.pick();
+
+
+    console.log({
+      'X': event.clientX, 'Y': event.clientY
+    })
+
+    // if (pickResult.hit) {
+    //   // Access the clicked mesh through pickResult.pickedMesh
+    //   const clickedMesh = pickResult.pickedMesh;
+    //   console.log("Clicked mesh name:", clickedMesh.name);
+    //   clicked.innerText = clickedMesh.name// Or perform actions based on the mesh
+    // } else {
+    //   // No mesh was clicked
+    //   clicked.innerText = 'Nothing was clicked' // Or perform actions based on the mesh
+    //   console.log("Nothing was clicked.");
+    // }
+  });
+
+  const data = {
+    'Femur': 'The thigh bone, the longest and strongest bone in the human body.',
+    'Ribs': 'Curved bones in the chest that protect the organs and assist in breathing.',
+    'Spine': 'A flexible column of bones (vertebrae) that supports the body and protects the spinal cord.',
+    'Sternum': 'Also known as the breastbone, it\'s a flat bone in the center of the chest to which the ribs are attached.',
+    'Cranium': 'The skull, which encloses and protects the brain.',
+    'Humerus': 'The bone of the upper arm, extending from the shoulder to the elbow.',
+    'Tibia': 'The larger of the two bones in the lower leg, commonly known as the shinbone.',
+    'Patella': 'The kneecap, a small, flat, triangular bone in front of the knee joint.',
+    'Pelvis': 'A basin-shaped structure of bones at the base of the spine, supporting the trunk and protecting internal organs.',
+    'Radius': 'One of the two bones of the forearm, located on the thumb side.',
+    'Ulna': 'The other bone of the forearm, located on the pinky side, parallel to the radius.',
+    'Fibula': 'The slender bone located on the outer side of the lower leg, parallel to and smaller than the tibia.',
+    'Vertebrae': 'The individual bones that make up the spinal column, providing support and protection for the spinal cord.'
+  };
+
+
+
+
+  function handleDisplay(scene, x, y, z, label, descriptionData) {
+    const material = new BABYLON.StandardMaterial("material", scene);
+
+    const circle = BABYLON.MeshBuilder.CreateDisc("circle", {
+      radius: 2.5,
+      tessellation: 50,
+      sideOrientation: BABYLON.Mesh.DOUBLESIDE
+    }, scene);
+    circle.position.x = x;
+    circle.position.y = y;
+    circle.position.z = z;
+    circle.material = material; // Apply the material to the circle mesh
+
+    // Add event listener for pointer down (click) events
+    circle.actionManager = new BABYLON.ActionManager(scene);
+    circle.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function (evt) {
+      // Perform actions when the circle is clicked
+      clicked.innerText = label
+      description.innerText = data[label]
+      modalButton.click()
+    }));
+
+  }
+
   // Run the render loop
   engine.runRenderLoop(function () {
     scene.render();
@@ -97,5 +289,9 @@
     engine.resize();
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
 </body>
 </html>
