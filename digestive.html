@@ -88,11 +88,13 @@
             <button onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
         </div>
         <p id="description">
-            The digestive system is a complex network of organs and tissues responsible for processing food and extracting nutrients essential for sustaining life. It begins in the mouth, where food is ingested, chewed, and mixed with saliva, initiating the breakdown of carbohydrates. The food then travels down the esophagus to the stomach, where it undergoes further breakdown through the action of stomach acids and enzymes.
+            The digestive system is a complex network of organs and tissues responsible for processing food and
+            extracting nutrients essential for sustaining life. It begins in the mouth, where food is ingested, chewed,
+            and mixed with saliva, initiating the breakdown of carbohydrates. The food then travels down the esophagus
+            to the stomach, where it undergoes further breakdown through the action of stomach acids and enzymes.
         </p>
     </div>
 </div>
-
 
 
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
@@ -109,7 +111,6 @@
     function zoomOut() {
         camera.radius += 10;
     }
-
 
 
     let clicked = document.getElementById('part');
@@ -226,7 +227,7 @@
 
         // Create the circle mesh
         const circle = BABYLON.MeshBuilder.CreateDisc("circle", {
-            radius:1,
+            radius: 1,
             tessellation: 50,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE,
             updatable: true // Necessary to modify texture coordinates

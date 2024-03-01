@@ -82,12 +82,13 @@
     <canvas id="renderCanvas"></canvas>
 
 
-
     <div class="info-card">
         <h2 class="info-card-title" id="part">Skeleton</h2>
         <div class="zoom-controls">
             <button onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
             <button onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+            <button id="draw-button" onclick="activateDrawMode()"><i class="fas fa-pencil"></i></button>
+
         </div>
         <p id="description">
             A skeleton provides a structural framework for a document or project, outlining its essential components and
@@ -273,6 +274,52 @@
     };
 
 
+    function activateDrawMode() {
+        // Flag to indicate if drawing is active
+        let isDrawing = false;
+        // Array to store line points
+        let linePoints = [];
+
+        // Event listener for pointer down (start drawing)
+        scene.onPointerDown = function (evt, pickResult) {
+            if (pickResult.hit) {
+                // Start drawing
+                isDrawing = true;
+                // Get the clicked position (first point)
+                linePoints.push(pickResult.pickedPoint);
+            }
+        };
+
+        // Event listener for pointer move (update line)
+        scene.onPointerMove = function (evt, pickResult) {
+            if (isDrawing && pickResult.hit) {
+                // Update the last point of the line based on mouse movement
+                linePoints[linePoints.length - 1] = pickResult.pickedPoint;
+            }
+        };
+
+        // Event listener for pointer up (end drawing)
+        scene.onPointerUp = function () {
+            if (isDrawing) {
+                // Stop drawing
+                isDrawing = false;
+
+                // Create a line mesh using the collected points
+                const lineMesh = BABYLON.MeshBuilder.CreateLines("line", {
+                    points: linePoints,
+                    updatable: true, // Allow modifying vertex data
+                }, scene);
+
+                // Add a material to the line mesh (optional)
+                const material = new BABYLON.StandardMaterial("lineMaterial", scene);
+                material.diffuseColor = new BABYLON.Color3(0, 0, 1); // Set line color (blue)
+                lineMesh.material = material;
+
+                // Clear the line points for the next drawing
+                linePoints = [];
+            }
+        };
+    }
 
 
     function handleDisplay(scene, x, y, z, label, descriptionData, number) {
@@ -302,18 +349,6 @@
             description.innerText = data[label];
         }));
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // Run the render loop
