@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 
     <title>Nervous System</title>
     <style>
@@ -45,6 +47,33 @@
             text-align: center;
             margin-bottom: 10px;
         }
+
+        .zoom-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+        }
+
+        .zoom-controls button {
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .zoom-controls button:hover {
+            background: #f0f0f0;
+        }
+
+        .zoom-controls button i {
+            font-size: 20px;
+            color: #7286D3;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +83,10 @@
 
     <div class="info-card">
         <h2 class="info-card-title" id="part">Nervous System</h2>
+        <div class="zoom-controls">
+            <button onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+            <button onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+        </div>
         <p id="description">
             The nervous system is a sophisticated network of cells and tissues responsible for transmitting signals throughout the body, facilitating communication between various organs, tissues, and systems. At its core are the brain and spinal cord, comprising the central nervous system (CNS), which orchestrates complex functions such as thought, memory, and movement regulation. The brain, encased within the skull, serves as the body's command center, interpreting sensory information, initiating responses, and coordinating bodily activities. The spinal cord, protected within the spinal column, acts as a conduit for nerve signals between the brain and the rest of the body, facilitating reflexes and involuntary actions. Surrounding the CNS is the peripheral nervous system (PNS), which includes nerves like the tibial nerve, sciatic nerve, and intercostal nerve.
         </p>
@@ -63,6 +96,16 @@
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 <script>
+
+    function zoomIn() {
+        camera.radius -= 0.1;
+    }
+
+    // Zoom Out function
+    function zoomOut() {
+        camera.radius += .1;
+    }
+
     let clicked = document.getElementById('part');
     let description = document.getElementById('description');
     let modalButton = document.getElementById('info-modal')

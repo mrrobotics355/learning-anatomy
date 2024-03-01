@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
     <title>Skeleton</title>
     <style>
         html, body {
@@ -45,6 +48,33 @@
             text-align: center;
             margin-bottom: 10px;
         }
+
+        .zoom-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+        }
+
+        .zoom-controls button {
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .zoom-controls button:hover {
+            background: #f0f0f0;
+        }
+
+        .zoom-controls button i {
+            font-size: 20px;
+            color: #7286D3;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +84,10 @@
 
     <div class="info-card">
         <h2 class="info-card-title" id="part">Skeleton</h2>
+        <div class="zoom-controls">
+            <button onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+            <button onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+        </div>
         <p id="description">
             A skeleton provides a structural framework for a document or project, outlining its essential components and
             their relationships. Typically, a skeleton consists of key elements such as headings, subheadings, and
@@ -70,6 +104,17 @@
 <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 
 <script>
+
+    // Zoom In function
+    function zoomIn() {
+        camera.radius -= 10;
+    }
+
+    // Zoom Out function
+    function zoomOut() {
+        camera.radius += 10;
+    }
+
 
     let clicked = document.getElementById('part');
     let description = document.getElementById('description');
